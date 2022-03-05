@@ -26,5 +26,5 @@ fn main() {
 
     let item = to_do_factory(&status, title).expect(&status);
 
-    process_input(item, command.to_string(), &state);
+    process_input(item, command, &state);
 }
