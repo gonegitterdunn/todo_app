@@ -1,19 +1,20 @@
-mod to_do;
+mod state;
 
-use to_do::to_do_factory;
-use to_do::ItemTypes;
+use serde_json::value::Value;
+use serde_json::{json, Map};
+use state::{read_file, write_to_file};
+use std::env;
 
 fn main() {
-    let to_do_item = to_do_factory("pending", "washing");
+    let args: Vec<String> = env::args().collect();
+    let status: &String = &args[1];
+    let title: &String = &args[2];
 
-    match to_do_item.unwrap() {
-        ItemTypes::Done(to_do_item) => println!(
-            "it's a done item with the title: {}",
-            to_do_item.super_struct.title
-        ),
-        ItemTypes::Pending(to_do_item) => println!(
-            "it's a pending item with the title: {}",
-            to_do_item.super_struct.title
-        ),
-    }
+    let mut state: Map<String, Value> = read_file(&String::from("./state.json"));
+
+    println!("{:#?}", state);
+
+    state.insert(title.to_string(), json!(status));
+
+    write_to_file("./state.json", &mut state);
 }
